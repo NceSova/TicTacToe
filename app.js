@@ -52,7 +52,7 @@ const gameboard = (function () {
     [2, 4, 6],
   ];
 
-  const calculateWinForPlayer = (player) => {
+  const isPLayerWinning = (player) => {
     for (let index = 0; index < _winningIndexes.length; index++) {
       const element = _winningIndexes[index];
       if (
@@ -70,7 +70,9 @@ const gameboard = (function () {
   };
 
   const getBoard = () => _board.map((cell) => cell.getToken());
+  // const setTokenOnCell = (index, token) => console.log(_board[index]);
   const setTokenOnCell = (index, token) => _board[index].setToken(token);
+  const getTokenOnCell = (index) => _board[index].getToken();
   const clear = () => {
     _board = [];
     generateBoard();
@@ -80,18 +82,57 @@ const gameboard = (function () {
     clear,
     getBoard,
     setTokenOnCell,
-    calculateWinForPlayer,
+    getTokenOnCell,
+    isPLayerWinning,
   };
 })();
 
-const game = (function () {})();
+const game = (function (player1, player2) {
+  let curPlayer = player1;
+  const getCurPlayer = () => curPlayer;
 
-console.log("start");
-const me = Player(1);
-gameboard.setTokenOnCell(1, me.getPlayerToken());
-gameboard.setTokenOnCell(4, me.getPlayerToken());
-gameboard.setTokenOnCell(7, me.getPlayerToken());
-console.log(gameboard.calculateWinForPlayer(me));
-console.log(gameboard.getBoard());
-gameboard.clear();
-console.log(gameboard.getBoard());
+  const changeCurPlayer = () =>
+    (curPlayer = curPlayer === player1 ? player2 : player1);
+
+  const makeAMove = (indexOfCell) => {
+    if (gameboard.getTokenOnCell(indexOfCell) === "#") {
+      gameboard.setTokenOnCell(indexOfCell, curPlayer.getPlayerToken());
+    } else {
+      console.log("invalidMove");
+    }
+  };
+
+  const drawBoard = () => {
+    boardArray = gameboard.getBoard();
+    return `${boardArray[0]} ${boardArray[1]} ${boardArray[2]}\n${boardArray[3]} ${boardArray[4]} ${boardArray[5]}\n${boardArray[6]} ${boardArray[7]} ${boardArray[8]}`;
+  };
+
+  const playRound = () => {
+    console.log(drawBoard());
+    let move = +prompt();
+    makeAMove(move);
+    if (gameboard.isPLayerWinning(curPlayer)) {
+      console.log(drawBoard());
+      return `The ${curPlayer.getPlayerToken()} has won!`;
+    } else {
+      changeCurPlayer();
+    }
+  };
+
+  return {
+    playRound,
+    getCurPlayer,
+    makeAMove,
+    changeCurPlayer,
+    drawBoard,
+  };
+})(Player("X"), Player("O"));
+
+// const me = Player(1);
+// gameboard.setTokenOnCell(1, me.getPlayerToken());
+// gameboard.setTokenOnCell(4, me.getPlayerToken());
+// gameboard.setTokenOnCell(7, me.getPlayerToken());
+// game.makeAMove(3);
+// console.log(gameboard.getBoard());
+// console.log(gameboard.getBoard());
+// console.log(game.drawBoard());
