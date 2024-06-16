@@ -36,6 +36,7 @@ function GameController(
   playerOneName = "Player One",
   playerTwoName = "Player Two"
 ) {
+  let gameOn = true;
   const board = Gameboard();
   const players = [
     {
@@ -101,19 +102,29 @@ function GameController(
     );
     board.makeAMove(index, getActivePlayer().token);
     // Game end logic
-    console.log(isGameOver());
-    switchActivePlayer();
-    printNewRound();
+    if (isGameOver()) {
+      gameOn = false;
+      console.log(board.printBoard());
+      console.log("game over");
+      return;
+    } else {
+      switchActivePlayer();
+      printNewRound();
+    }
+  };
+
+  const play = () => {
+    while (gameOn) {
+      playRound(+prompt());
+    }
   };
 
   printNewRound();
   return {
-    playRound,
+    play,
     getActivePlayer,
   };
 }
 
 const game = GameController();
-while (true) {
-  game.playRound(+prompt());
-}
+game.play();
