@@ -114,8 +114,14 @@ function GameController(
   };
 
   const play = () => {
+    let i = 0;
     while (gameOn) {
+      if (i === 9) {
+        console.log("Its a tie");
+        break;
+      }
       playRound(+prompt());
+      i++;
     }
   };
 
