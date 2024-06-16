@@ -163,7 +163,7 @@ function ScreenController() {
   const gameOverCallback = () => {
     let win = document.querySelector(".winner");
     win.textContent = `Победил ${game.getActivePlayer().name}`;
-    win.style.cssText = "font-size: 2rem; color: #e11d48;";
+    win.style.cssText = "font-size: 1.5rem; color: #e11d48;";
     console.log("game OVER");
     const buttons = document.querySelectorAll(".cell");
     buttons.forEach((button) => {
@@ -175,7 +175,7 @@ function ScreenController() {
   const tieCallback = () => {
     let win = document.querySelector(".winner");
     win.textContent = "НИЧЬЯ";
-    win.style.cssText = "font-size: 2rem; color: #e11d48;";
+    win.style.cssText = "font-size: 1.5rem; color: #e11d48;";
     boardDiv.removeEventListener("click", clickHandler);
     playerTurnDiv.textContent = `НИЧЬЯ!!!`;
     console.log("ITS A TIE");
