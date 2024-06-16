@@ -108,6 +108,7 @@ function GameController(
       console.log("game over");
       return;
     } else {
+      console.log(`cur player was ${getActivePlayer().name}`);
       switchActivePlayer();
       printNewRound();
     }
@@ -128,9 +129,40 @@ function GameController(
   printNewRound();
   return {
     play,
+    playRound,
     getActivePlayer,
+    getBoard: board.getBoard,
   };
 }
 
-const game = GameController();
-game.play();
+function ScreenController() {
+  const game = GameController();
+  const playerTurnDiv = document.querySelector(".turn");
+  const boardDiv = document.querySelector(".board-container");
+
+  const updateScreen = () => {
+    boardDiv.innerHTML = "";
+    const board = game.getBoard();
+    const activePlayer = game.getActivePlayer();
+
+    playerTurnDiv.textContent = `Сейчас ходит ${activePlayer.name}`;
+
+    for (let index = 0; index < 9; index++) {
+      const curCell = board[index];
+      const cellButton = document.createElement("button");
+      cellButton.classList.add("cell");
+      cellButton.id = index;
+      cellButton.textContent = curCell.getValue();
+      boardDiv.appendChild(cellButton);
+    }
+  };
+  function clickHandler(e) {
+    const cell = e.target.id;
+    console.log(`click detected ${cell}`);
+    game.playRound(cell);
+    updateScreen();
+  }
+  boardDiv.addEventListener("click", clickHandler);
+  updateScreen();
+}
+ScreenController();
