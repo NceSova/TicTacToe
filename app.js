@@ -13,9 +13,7 @@ function Gameboard() {
     board.push(Cell());
   }
 
-  const getBoard = () => {
-    return board.map((cell) => cell);
-  };
+  const getBoard = () => board;
   const printBoard = () => {
     const boardArray = getBoard().map((cell) => cell.getValue());
     return `${boardArray[0]} | ${boardArray[1]} | ${boardArray[2]}\n----------\n${boardArray[3]} | ${boardArray[4]} | ${boardArray[5]}\n----------\n${boardArray[6]} | ${boardArray[7]} | ${boardArray[8]}`;
@@ -33,8 +31,8 @@ function Gameboard() {
 }
 
 function GameController(
-  playerOneName = "Player One",
-  playerTwoName = "Player Two"
+  playerOneName = "Первый игрок",
+  playerTwoName = "Второй игрок"
 ) {
   let gameOn = true;
   const board = Gameboard();
@@ -96,39 +94,35 @@ function GameController(
     return flag;
   };
 
-  const playRound = (index) => {
+  const isTie = () => {
+    let cells = board.getBoard().filter((cell) => cell.getValue() === "#");
+    if (!cells.length) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const playRound = (index, gameOverCallback, tieCallback) => {
     console.log(
       `${getActivePlayer().name} placing ${getActivePlayer().token} on ${index}`
     );
     board.makeAMove(index, getActivePlayer().token);
     // Game end logic
     if (isGameOver()) {
-      gameOn = false;
-      console.log(board.printBoard());
-      console.log("game over");
+      gameOverCallback();
+      return;
+    } else if (isTie()) {
+      tieCallback();
       return;
     } else {
-      console.log(`cur player was ${getActivePlayer().name}`);
       switchActivePlayer();
       printNewRound();
     }
   };
 
-  const play = () => {
-    let i = 0;
-    while (gameOn) {
-      if (i === 9) {
-        console.log("Its a tie");
-        break;
-      }
-      playRound(+prompt());
-      i++;
-    }
-  };
-
   printNewRound();
   return {
-    play,
     playRound,
     getActivePlayer,
     getBoard: board.getBoard,
@@ -138,6 +132,7 @@ function GameController(
 function ScreenController() {
   const game = GameController();
   const playerTurnDiv = document.querySelector(".turn");
+  const playerTokenDiv = document.querySelector(".turn-token");
   const boardDiv = document.querySelector(".board-container");
 
   const updateScreen = () => {
@@ -145,23 +140,54 @@ function ScreenController() {
     const board = game.getBoard();
     const activePlayer = game.getActivePlayer();
 
-    playerTurnDiv.textContent = `Сейчас ходит ${activePlayer.name}`;
+    playerTurnDiv.textContent = `Сейчас ходит: ${activePlayer.name}`;
+    playerTokenDiv.textContent = `-> ${activePlayer.token}`;
 
     for (let index = 0; index < 9; index++) {
       const curCell = board[index];
       const cellButton = document.createElement("button");
       cellButton.classList.add("cell");
       cellButton.id = index;
+      if (curCell.getValue() === "X") {
+        let col = "blue";
+        cellButton.style.color = col;
+      } else if (curCell.getValue() === "O") {
+        let col = "red";
+        cellButton.style.color = col;
+      }
       cellButton.textContent = curCell.getValue();
       boardDiv.appendChild(cellButton);
     }
   };
+
+  const gameOverCallback = () => {
+    let win = document.querySelector(".winner");
+    win.textContent = `Победил ${game.getActivePlayer().name}`;
+    win.style.cssText = "font-size: 2rem; color: #e11d48;";
+    console.log("game OVER");
+    const buttons = document.querySelectorAll(".cell");
+    buttons.forEach((button) => {
+      button.disabled = true;
+    });
+    boardDiv.removeEventListener("click", clickHandler);
+  };
+
+  const tieCallback = () => {
+    let win = document.querySelector(".winner");
+    win.textContent = "НИЧЬЯ";
+    win.style.cssText = "font-size: 2rem; color: #e11d48;";
+    boardDiv.removeEventListener("click", clickHandler);
+    playerTurnDiv.textContent = `НИЧЬЯ!!!`;
+    console.log("ITS A TIE");
+  };
+
   function clickHandler(e) {
     const cell = e.target.id;
     console.log(`click detected ${cell}`);
-    game.playRound(cell);
+    game.playRound(cell, gameOverCallback, tieCallback);
     updateScreen();
   }
+
   boardDiv.addEventListener("click", clickHandler);
   updateScreen();
 }

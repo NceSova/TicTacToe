@@ -1,8 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap");
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  border: 2px solid red;
+  font-family: "Comfortaa", sans-serif;
+}
+
+body {
+  background-color: #f0fdfa;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .board-container {
@@ -11,8 +20,35 @@
   grid-template-rows: repeat(3, 1fr);
   height: 400px;
   width: 400px;
+  margin-bottom: 40px;
+  margin-top: 20px;
+}
+
+.container {
+  background-color: #fce7f3;
+  border: 1px solid black;
+  box-shadow: 8px 8px 8px #22d3ee;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .cell {
-  border: 2px solid green;
+  font-size: 40px;
+  background-color: #f9a8d4;
+  border-radius: 10px;
+  margin: 4px;
+}
+
+.text-container {
+  width: 452px;
+  font-size: 1.5rem;
+  display: flex;
+  max-width: fit-content;
+}
+
+.turn-token {
+  margin: 0px 8px;
 }
