@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #ccfbf1;
+  background-color: #f0fdfa;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -44,7 +44,7 @@ body {
 
 .text-container {
   width: 300px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   display: flex;
   max-width: fit-content;
 }
